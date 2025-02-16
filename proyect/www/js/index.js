@@ -22,14 +22,11 @@
 document.addEventListener('deviceready', onDeviceReady, false);
 
 function onDeviceReady() {
-    // Cordova is now initialized. Have fun!
-
     console.log('Running cordova-' + cordova.platformId + '@' + cordova.version);
-
 }
 
 window.onload = function() {
-  console.log("pàgina carregada");
+  console.log("Página cargada");
   var options = { "swipeable": true };
   var el = document.getElementsByClassName('tabs');
   var instance = M.Tabs.init(el, options);
@@ -37,5 +34,106 @@ window.onload = function() {
 
 document.addEventListener('DOMContentLoaded', function() {
   const elems = document.querySelectorAll('.sidenav');
-  const instances = M.Sidenav.init(elems);
+  M.Sidenav.init(elems);
+  
+  const selectElems = document.querySelectorAll('select');
+  M.FormSelect.init(selectElems);
+
+  document.getElementById('search-btn').addEventListener('click', function() {
+    const searchType = document.getElementById('search-type').value;
+    const searchQuery = document.getElementById('search-query').value;
+    const resultText = `Se buscó por ${searchType === 'isbn' ? 'ISBN' : 'Nombre del Libro'} con (${searchQuery})`;
+    document.getElementById('search-result').innerText = resultText;
+
+    let apiUrl = '';
+    if (searchType === 'isbn') {
+      apiUrl = `https://www.googleapis.com/books/v1/volumes?q=isbn:${searchQuery}`;
+    } else {
+      apiUrl = `https://www.googleapis.com/books/v1/volumes?q=intitle:${searchQuery.replace(/ /g, '+')}`;
+    }
+
+    fetch(apiUrl)
+      .then(response => response.json())
+      .then(data => {
+        const resultsContainer = document.getElementById('search-result');
+        resultsContainer.innerHTML = '';
+
+        if (data.items && data.items.length > 0) {
+          data.items.forEach(item => {
+            const bookInfo = item.volumeInfo;
+            const bookElement = document.createElement('div');
+            bookElement.classList.add('book-item');
+            bookElement.innerHTML = `
+              <div class="book-item">
+                <div class="book-info">
+                  <div class="book-title">
+                    <h6 class="book-title-text">${bookInfo.title}</h6>
+                  </div>
+                  <div class="book-authors">
+                    <p><strong>Autor(es):</strong> <span class="authors-list">${bookInfo.authors ? bookInfo.authors.join(', ') : 'Desconocido'}</span></p>
+                  </div>
+                  <div class="book-published">
+                    <p><strong>Publicado en:</strong> <span class="published-date">${bookInfo.publishedDate || 'Desconocido'}</span></p>
+                  </div>
+                  <div class="book-description">
+                    <p><strong>Descripción:</strong> <span class="description-text">${bookInfo.description || 'No disponible.'}</span></p>
+                  </div>
+                </div>
+                <div class="book-image">
+                  <img class="book-thumbnail" src="${bookInfo.imageLinks ? bookInfo.imageLinks.thumbnail : ''}" alt="Imagen del libro">
+                </div>
+              </div>
+            `;
+            resultsContainer.appendChild(bookElement);
+          });
+        } else {
+          resultsContainer.innerHTML = 'No se encontraron resultados para su búsqueda.';
+        }
+      })
+      .catch(error => {
+        console.error('Error al realizar la búsqueda:', error);
+        document.getElementById('search-result').innerText = 'Hubo un problema al realizar la búsqueda.';
+      });
+
+    const instance = M.Tabs.getInstance(document.querySelector('.tabs'));
+    instance.select('test-swipe-2');
+  });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  const videoElement = document.getElementById('video');
+  const photoElement = document.getElementById('photo');
+  const canvasElement = document.getElementById('canvas');
+  const cameraStatus = document.getElementById('camera-status');
+  const cameraBtn = document.getElementById('camera-btn');
+
+  // Función para acceder a la cámara
+  function startCamera() {
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(function(stream) {
+          videoElement.srcObject = stream;
+        })
+        .catch(function(err) {
+          console.error("Error al acceder a la cámara: ", err);
+          cameraStatus.textContent = "No se pudo acceder a la cámara.";
+        });
+    } else {
+      alert("La API de cámara no está soportada en este navegador.");
+    }
+  }
+
+  cameraBtn.addEventListener('click', function() {
+    const context = canvasElement.getContext('2d');
+    canvasElement.width = videoElement.videoWidth;
+    canvasElement.height = videoElement.videoHeight;
+    context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+
+    const imageData = canvasElement.toDataURL('image/png');
+    photoElement.src = imageData;
+    photoElement.style.display = 'block';
+    cameraStatus.textContent = '¡Foto tomada!';
+  });
+
+  startCamera();
 });

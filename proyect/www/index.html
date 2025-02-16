@@ -18,29 +18,60 @@
     under the License.
 -->
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-        <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>PlantillaWeb</title>
-    </head>
-    <body>
-        <ul id="tabs-swipe-demo" class="tabs">
-            <button data-target="slide-out" class="sidenav-trigger btn"><i class="material-icons">list</i></button>
-            <li class="tab col s3"><a href="#test-swipe-1">Test 1</a></li>
-            <li class="tab col s3"><a class="active" href="#test-swipe-2">Test 2</a></li>
-            <li class="tab col s3"><a href="#test-swipe-3">Test 3</a></li>
-        </ul>
-        <div id="test-swipe-1" class="col s12 blue"></div>
-        <div id="test-swipe-2" class="col s12 red"></div>
-        <div id="test-swipe-3" class="col s12 green"></div>
-        <ul id="slide-out" class="sidenav">
-            
-        </ul>
-
-        <script src="js/index.js"></script>
-        <script src="js/materialize.js"></script>
-    </body>
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlantillaWeb</title>
+</head>
+<body>
+    <ul id="tabs-swipe-demo" class="tabs">
+        <button data-target="slide-out" class="sidenav-trigger btn"><i class="material-icons">list</i></button>
+        <li class="tab col s3"><a class="active" href="#test-swipe-1">Buscar Libro</a></li>
+        <li class="tab col s3"><a href="#test-swipe-2">Resultados</a></li>
+        <li class="tab col s3"><a href="#test-swipe-3">Otro</a></li>
+    </ul>
+    
+    <div id="test-swipe-1" class="col s12">
+        <div class="container">
+            <h5>Buscar Libro</h5>
+            <div class="row">
+                <div class="input-field-type">
+                    <select id="search-type">
+                        <option value="isbn">ISBN</option>
+                        <option value="titulo">Nombre del Libro</option>
+                    </select>
+                    <label>Buscar por:</label>
+                </div>
+                <div class="input-field">
+                    <input type="text" id="search-query" placeholder="Ingrese su búsqueda">
+                </div>
+            </div>
+            <button class="btn waves-effect waves-light" id="search-btn">Buscar</button>
+        </div>
+    </div>
+    
+    <div id="test-swipe-2" class="col s12">
+        <div class="container">
+            <h5>Resultados</h5>
+            <p id="search-result">Aún no se ha realizado ninguna búsqueda.</p>
+        </div>
+    </div>
+    
+    
+    <div id="test-swipe-3" class="col s12">
+        <h5>Tomar Foto</h5>
+        <video id="video" width="30%" height="auto" autoplay></video>
+        <button id="camera-btn" class="btn waves-effect waves-light">Tomar Foto</button>
+        <canvas id="canvas" style="display:none;"></canvas>
+        <img id="photo" style="display:none;" alt="Foto tomada" />
+        <p id="camera-status"></p>
+      </div>
+    <ul id="slide-out" class="sidenav"></ul>
+    
+    <script src="js/materialize.js"></script>
+    <script src="js/index.js"></script>
+</body>
 </html>
