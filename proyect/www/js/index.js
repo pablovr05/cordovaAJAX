@@ -107,7 +107,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const cameraStatus = document.getElementById('camera-status');
   const cameraBtn = document.getElementById('camera-btn');
 
-  // Función para acceder a la cámara
   function startCamera() {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       navigator.mediaDevices.getUserMedia({ video: true })
